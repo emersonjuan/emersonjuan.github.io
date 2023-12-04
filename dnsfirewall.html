@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>DNS Firewall | Cloud Security</title>
+    <link rel="stylesheet" href="./css/style.css">
+    <script src="./js/main.js" defer></script>
+</head>
+
+<body id="container">
+    <div id="wrapper">
+        <header>
+            <h1><a href="index.html">Emerson Silva | Cloud Security Blog</a></h1>
+        </header>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="articles.html">Articles</a></li>
+                <li><a href="aboutme.html">About Me</a></li>
+            </ul>
+        </nav>
+        <div id="flexBox">
+            <main>
+                <div class="fullArticle">
+                    <h2>AWS DNS Firewall</h2>
+                    <h3>How to prevent data exfiltration via DNS tunneling.</h3>
+                    <p>AWS makes several features and services available so that the customer can effectively construct
+                        layered security in their environment. However, a few years ago, it was not possible to control
+                        DNS
+                        queries originating from the VPC natively, so the customer needed to plan the security of their
+                        network architecture with third-party solutions in order to fill that gap.[1]</p>
+                    <p>
+                        Launched in early 2021, Amazon Route 53 Resolver DNS Firewall is the native solution (managed
+                        firewall) that provides the customer with controlling DNS queries made from their environment,
+                        enabling the prevention of data exfiltration, reverse shell and other malicious activities
+                        through
+                        DNS tunneling. In addition, the “DNS Firewall” (we will use this name in this article to
+                        reference
+                        the official service name) is one of the security controls mentioned by AWS, which adheres to
+                        good
+                        practices and standards, such as NIST[2] for example.
+                    </p>
+                    <h3>Route 53 Resolver Overview:</h3>
+                    <p>
+                        Before exploring in practice how to configure DNS Firewall, it is important to remember that
+                        queries
+                        made within the VPC are forwarded to the Route 53 Resolver or AmazonProvidedDNS (x.x.x.2 of the
+                        VPC
+                        CIDR).[3]
+                    </p>
+                    <p>Once Route 53 Resolver receives the query, it can do the following:</p>
+                    <ol>
+                        <li>Check if the query can be resolved for some resource in the private zone;</li>
+                        <li>Check if the query can be resolved for some AWS services;</li>
+                        <li>Finally, if none of the two options above matches and there is no forwarding rule, the query
+                            is
+                            sent to an authoritative DNS on the internet;</li>
+                    </ol>
+                    <h3>Important to remember:</h3>
+                    <p><i>“Route 53 Resolver does not use the Internet Gateway (IGW), Security Groups, or network ACLs
+                            attached to your VPC to resolve public DNS zones. That means DNS queries will be resolved
+                            even
+                            if the VPC does not have an Internet Gateway attached, or a route to the internet.”[4]</i>
+                    </p>
+                    <figure>
+                        <img src="./images/dnsFirewall_images/dnsRuleOrder.webp" width="700" height="400"
+                            alt="Dns Firewall Rule Order">
+                        <figcaption><b>Source: </b><a
+                                href="https://aws.amazon.com/blogs/networking-and-content-delivery/secure-your-amazon-vpc-dns-resolution-with-amazon-route-53-resolver-dns-firewall" target="_blank">Secure-your-amazon-vpc-dns-resolution-with-amazon-route-53-resolver-dns-firewall</a>
+                        </figcaption>
+                    </figure>
+                    <h3>DNS Firewall and its components:</h3>
+                    <p><b>Rule:</b> A filtering rule for DNS queries in a DNS Firewall rule group. Each rule specifies
+                        one
+                        domain list and an action to take on DNS queries whose domains match the domain specifications
+                        in
+                        the list. You can allow, block, or alert on matching queries.</p>
+                    <p><b>Domain list:</b> A reusable collection of domain specifications for use in DNS filtering.</p>
+                    <p><b>Rule group:</b> A reusable collection of DNS Firewall rules for filtering DNS queries. [5]</p>
+                    <h3>Important to remember about DNS Firewall:</h3>
+                    <ul>
+                        <li>Does not do name-to-IP resolution;</li>
+                        <li>Does not filter HTTPS, SSH, TLS, FTP and etc;</li>
+                        <li>Filter only domains and DNS/UDP traffic;</li>
+                        <li>Rules are evaluated from lowest priority to highest priority;</li>
+                        <li>Capacity of 100 rules per Rule Group;</li>
+                        <li>You can associate a rule group with multiple VPCs;</li>
+                        <li>Rule groups can be shared between AWS accounts across your organization;</li>
+                        <li>DNS Firewall is a Regional service;</li>
+                        <li>Logs can be sent to CloudWatch Logs, S3 and Kinesis Data Firehose;</li>
+                    </ul>
+                    <h3>Hands-on:</h3>
+                    <p>Now that we have an overview of how the services work, let’s create two Domain lists. The domain
+                        list
+                        <b>“AllDomains”</b> will be used to block all domains, this can be done by using the <b>“*”</b>,
+                        as
+                        shown in the
+                        image below:
+                    </p>
+                    <figure>
+                        <img src="./images/dnsFirewall_images/allPossibleDomains.webp" width="820" height="400"
+                            alt="All Possible Domains">
+                        <figcaption>Creates a domain list with all possible domains</figcaption>
+                    </figure>
+                    <p>The other domain list is <b>“Allowed_Domains”</b>, which will be used in a rule that we will
+                        allow
+                        queries
+                        originating from our VPC to them.</p>
+                    <figure>
+                        <img src="./images/dnsFirewall_images/allowedDomains.webp" width="820" height="400"
+                            alt="Allowed Domains List">
+                        <figcaption>Creates a domain list with allowed domains</figcaption>
+                    </figure>
+                    <p>Done! Now that we have our domain lists, we can go ahead and create the Rule group, add rules to
+                        it,
+                        and finally, associate the Rule group with the VPC that we want to secure.</p>
+                    <figure>
+                        <img src="./images/dnsFirewall_images/rulesAndVPC.webp" width="820" height="400"
+                            alt="Rules and VPC">
+                        <figcaption>Rule group with two rules and a VPC associated with it.</figcaption>
+                    </figure>
+                    <br>
+                    <figure>
+                        <img src="./images/dnsFirewall_images/blockActionForDomainList.webp" width="820" height="1000"
+                            alt="Block Action For Domain List">
+                        <figcaption>Creates a Rule and attaches our own domain list with a block action.</figcaption>
+                    </figure>
+                    <h3>Final Results — DNS Firewall:</h3>
+                    <p>Without the deployment of DNS Firewall, we can see below that it is possible to perform data
+                        exfiltration through DNS queries which come from resources within the VPC.</p>
+                    <p>The image shows the log queries that were made to a fictitious malware domain, where the queries
+                        were
+                        initiated from an EC2 instance. In this case, the data was sent in clear text, but several
+                        techniques can be used, such as encoding the data or splitting the queries into several domains
+                        as a
+                        way to make its identification more difficult.</p>
+                    <img src="./images/dnsFirewall_images/queriesViaDNS.webp" width="700" height="150"
+                        alt="Exfiltration via DNS">
+                    <p>Now, when we perform the same query that we have made early, but with our rules adjusted and
+                        activated in the DNS Firewall, we can see that the traffic is blocked, which prevents these
+                        queries
+                        to reach the malicious domain out.</p>
+                    <img src="./images/dnsFirewall_images/blockExfiltration.webp" width="700" height="250"
+                        alt="Block Exfiltration via DNS">
+                    <h3>Conclusion:</h3>
+                    <p>To sum up, some companies do not examine nor control their DNS traffic thinking it is inoffensive
+                        traffic, trustful or because they do not know the real threats that could be subjected. The
+                        reality
+                        is that DNS tunneling is not difficult to perform and bad actors know it. If you are using AWS
+                        cloud
+                        you can take the benefit of DNS Firewall as we saw above and add an additional layer of
+                        protection
+                        along with other security services, such as GuardDuty and so on.</p>
+                        <h3>Sources:</h3>
+                        <ol>
+                            <li>https://aws.amazon.com/about-aws/whats-new/2021/03/introducing-amazon-route-53-resolver-dns-firewall</li>
+                            <li>https://docs.aws.amazon.com/whitepapers/latest/ransomware-risk-management-on-aws-using-nist-csf/nistir-8374-ransomware-profile.html</li>
+                            <li>https://docs.aws.amazon.com/vpc/latest/userguide/vpc-dns.html</li>
+                            <li>https://aws.amazon.com/blogs/networking-and-content-delivery/secure-your-amazon-vpc-dns-resolution-with-amazon-route-53-resolver-dns-firewall/</li>
+                            <li>https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/resolver-dns-firewall-overview.html</li>
+                            <li>https://aws.amazon.com/route53/pricing/</li>
+                        </ol>
+                    <h4>Comments:</h4>
+                    <h5 id="name"></h5>
+                    <p id="comments"></p>
+                    <form onsubmit="comments(event)">
+                        <fieldset>
+                            <legend>
+                                Leave a comment:
+                            </legend>
+                            <label for="userName">Name (Required): </label>
+                            <input type="text" name="userName" id="userName" required><br><br>
+                            <label for="email">E-mail (Required):</label>
+                            <input type="email" name="email" id="email" required><br><br>
+                            <label for="comment">Comment (Required):</label><br>
+                            <textarea name="comment" id="comment" rows="15" cols="40"></textarea><br>
+                            <label for="submit"></label><br>
+                            <input type="submit" name="submit" id="submit" value="Post comment">
+                        </fieldset>
+                    </form>
+                </div>
+            </main>
+            <aside>
+                <div id="authorBox">
+                    <h3>About the author</h3>
+                    <p>Runner, Swimmer and a future triathlete. I love books, beers, and spend time with family and
+                        friends. Interest in Cloud Security and Web Application Security.</p>
+                </div>
+                <div id="recentPostsBox">
+                    <h3>Recent Posts</h3>
+                    <a href="dnsfirewall.html">AWS DNS Firewall</a><br>
+                    <a href="vpcendpoint.html">VPC S3 Endpoint with a Custom Policy</a><br>
+                    <a href="scps.html">AWS Service Control Policies (SCPs)</a><br>
+                    <a href="privatelink.html">How to Securely Connect to Provider’s service via AWS PrivateLink</a>
+                </div>
+                <div id="tagsBox">
+                    <h3>Categories/Tags</h3>
+                </div>
+            </aside>
+        </div>
+        <footer>
+            <small><i>Emerson Juan da Silva | Cloud Security Blog | <a href="aboutme.html">Contact</a></i></small>
+        </footer>
+    </div>
+    </body>
+</html>

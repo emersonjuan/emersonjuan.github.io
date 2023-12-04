@@ -1,0 +1,373 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    background-color: rgb(200, 210, 253);
+    padding-top: 10px;
+}
+
+#wrapper {
+    width: 80%;
+    /*Define 80% of page layout for wrapper ID*/
+    min-width: 320px;
+    max-width: 1200px;
+    background-color: rgb(248, 248, 248);
+    text-align: center;
+    margin: auto;
+    box-shadow: 1px 3px 10px 1px;
+}
+
+#flexBox {
+    display: flex;
+    /*Property to configure a flex container*/
+}
+
+header {
+    background-image: url(../images/cloudSec.webp);
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-color: rgb(60, 107, 161);
+    height: 150px;
+    padding: 15px;
+}
+
+h1 a {
+    color: rgb(1, 37, 49);
+    text-decoration: none;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 35px;
+    padding-left: 150px;
+
+}
+
+nav {
+    background-color: rgb(211, 209, 209);
+    height: 60px;
+    padding-top: 1px;
+    text-align: left;
+}
+
+nav ul {
+    list-style-type: none;
+    /*Removes the list markers*/
+}
+
+nav a {
+    text-decoration: none;
+    /*Removes underline from the navigation hyperlinks*/
+    padding-right: 15px;
+    /*Add some space between the hyperlinks*/
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 20px;
+    font-weight: bold;
+    margin: 15px;
+    color: rgb(6, 60, 78);
+}
+
+nav a:hover {
+    background-color: rgb(60, 107, 161);
+}
+
+nav li {
+    display: inline;
+    /*To render the list items horizontally*/
+}
+
+#searchBox {
+    float: right;
+    /*Define searchbox to right side of nav bar*/
+    padding-right: 100px;
+    margin-right: 5px;
+}
+
+main {
+    flex: 8;
+    /*Configure proportional flexible items*/
+    margin: 20px;
+    padding: 20px;
+}
+
+aside {
+    flex: 2;
+    /*Configure proportional flexible items*/
+    border-left: 2px solid;
+    margin: 20px;
+    padding: 20px;
+}
+
+footer {
+    background-color: rgb(202, 225, 252);
+    height: 50px;
+    padding-top: 15px;
+    color: rgb(6, 60, 78);
+}
+
+footer a {
+    text-decoration: none;
+    color: rgb(6, 60, 78);
+    font-weight: bold;
+}
+
+.articles h2 {
+    font-size: 30px;
+    color: rgb(6, 60, 78);
+}
+
+.articles h3 {
+    font-size: 20px;
+    color: rgb(128, 126, 126);
+}
+
+.articles {
+    border-bottom: 2px solid rgb(211, 209, 209);
+    margin: 10px;
+    text-align: justify;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.articles a {
+    text-decoration: none;
+    font-weight: bold;
+    color: rgb(6, 60, 78);
+}
+
+#authorBox h3 {
+    text-align: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: rgb(60, 107, 161);
+    font-size: 20px;
+}
+
+#authorBox {
+    text-align: justify;
+    font-size: 15px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+#recentPostsBox h3 {
+    text-align: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: rgb(60, 107, 161);
+    font-size: 20px;
+}
+
+#recentPostsBox {
+    text-align: justify;
+    font-size: 15px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+#recentPostsBox a {
+    text-decoration: none;
+}
+
+#tagsBox h3 {
+    text-align: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: rgb(60, 107, 161);
+    font-size: 20px;
+}
+
+#tagsBox {
+    text-align: justify;
+    font-size: 15px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+#aboutme h2 {
+    text-align: left;
+    font-size: 30px;
+    color: rgb(6, 60, 78);
+}
+
+#aboutme p {
+    text-align: justify;
+    font-size: 15px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+#aboutme form legend {
+    text-align: left;
+    font-size: 20px;
+    color: rgb(6, 60, 78);
+    font-weight: bold;
+}
+
+#aboutme form {
+    text-align: left;
+}
+
+.fullArticle h2 {
+    text-align: left;
+    font-size: 30px;
+    color: rgb(6, 60, 78);
+}
+
+.fullArticle h3 {
+    text-align: left;
+    font-size: 20px;
+    color: black;
+}
+
+.fullArticle p {
+    text-align: justify;
+    font-size: 15px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.fullArticle ul {
+    text-align: justify;
+    font-size: 15px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.fullArticle ol {
+    text-align: justify;
+    font-size: 15px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.fullArticle dt {
+    text-align: justify;
+    font-size: 15px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: bold;
+}
+
+.fullArticle dd {
+    text-align: justify;
+    font-size: 15px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.fullArticle form legend {
+    text-align: left;
+    font-size: 20px;
+    color: rgb(6, 60, 78);
+    font-weight: bold;
+}
+
+.fullArticle form {
+    text-align: left;
+}
+
+.fullArticle h4 {
+    text-align: left;
+    font-size: 20px;
+    color: black;
+}
+
+.fullArticle h5 {
+    text-align: left;
+    font-size: 15px;
+    color: black;
+}
+
+/*Display the flex items in a different order*/
+main {
+    order: 1;
+}
+
+/*Display the flex items in a different order*/
+aside {
+    order: 2;
+}
+
+
+
+@media only screen and (max-width: 1200px) {
+
+    /*Display for tablet*/
+    body {
+        margin: 0px;
+    }
+
+    header {
+        background-color: rgb(60, 107, 161);
+    }
+
+    h1 {
+        display: none;
+    }
+
+    aside {
+        display: none;
+    }
+
+    img {
+        display: none
+    }
+
+    #wrapper {
+        width: 768px;
+    }
+
+    nav {
+        background-color: rgb(60, 107, 161);
+    }
+
+    nav ul {
+        text-align: center;
+        margin: 0px;
+    }
+
+    nav ul li {
+        display: inline-block;
+        padding: 0.3em
+    }
+
+    nav a {
+        color: white;
+    }
+}
+
+@media only screen and (max-width: 768px) {
+
+    /*Display for mobile*/
+    body {
+        margin: 0px;
+    }
+
+    header {
+        background-color: rgb(60, 107, 161);
+    }
+
+    h1 {
+        display: none;
+    }
+
+    aside {
+        display: none;
+    }
+
+    img {
+        display: none;
+    }
+
+    #wrapper {
+        width: 460px;
+    }
+
+    nav {
+        width: auto;
+        margin: 10px;
+        background-color: white;
+    }
+
+    nav ul {
+        text-align: center;
+        padding: 0px;
+    }
+
+    nav ul li {
+        display: block;
+        margin-left: 0px;
+        border: 1px solid black;
+    }
+
+    nav a {
+        color: darkblue;
+        font-weight: bold;
+    }
+}

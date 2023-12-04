@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>VPC S3 Endpoint | Cloud Security</title>
+    <link rel="stylesheet" href="./css/style.css">
+    <script src="./js/main.js" defer></script>
+</head>
+
+<body id="container">
+    <div id="wrapper">
+        <header>
+            <h1><a href="index.html">Emerson Silva | Cloud Security Blog</a></h1>
+        </header>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="articles.html">Articles</a></li>
+                <li><a href="aboutme.html">About Me</a></li>
+            </ul>
+        </nav>
+        <div id="flexBox">
+            <main>
+                <div class="fullArticle">
+                    <h2>VPC S3 Endpoint with a Custom Policy</h2>
+                    <p>Today, we will explore the basic concepts of the VPC endpoint for S3, the different types and
+                        differences between them, and most importantly, how to configure an S3 endpoint policy to limit
+                        which buckets your services can communicate with.</p>
+                    <p>A VPC endpoint comes in handy because we can use them to communicate with some supported AWS
+                        services
+                        without requiring an internet gateway. Not only that, but endpoints are horizontally scaled,
+                        redundant, and highly available VPC components.[1]</p>
+                    <h3>What types do we have?</h3>
+                    <dl>
+                        <dt>
+                            Gateway endpoint:
+                        </dt>
+                        <dd>
+                            It is a route entry in your route table to access Amazon S3 from your VPC over the AWS
+                            network.
+                        </dd>
+                        <dt>
+                            Interface endpoint:
+                        </dt>
+                        <dd>
+                            This type uses a private IP address from your VPC to route the traffic to the Amazon S3
+                            service.
+                        </dd>
+                    </dl>
+                    <h3>What are the differences between them?</h3>
+                    <figure>
+                        <img src="./images/vpc_images/vpcDifferences.webp" width="700" height="150"
+                            alt="VPC Endpoint Differences">
+                        <figcaption><b>Source: </b><a
+                                href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/privatelink-interface-endpoints.html" target="_blank">Private
+                                Link Interface Endpoints</a></figcaption>
+                    </figure>
+                    <h3>VPC endpoint policies:</h3>
+                    <p>A VPC endpoint policy is an IAM resource policy that you attach to an endpoint when you create or
+                        modify the endpoint.[2]</p>
+                    <h3>IMPORTANT:</h3>
+                    <ul>
+                        <li>If you do <b>NOT</b> attach a policy, AWS will attach a Full Access default policy for you;
+                        </li>
+                        <li>VPC endpoint policies do <b>NOT</b> override or replace Users/Resources policies;</li>
+                        <li>You <b>CANNOT</b> attach more than <b>ONE</b> policy to an endpoint;</li>
+                        <li>Your policy <b>MUST</b> contain a Principal element;</li>
+                        <li>Endpoint policy <b>CANNOT</b> exceed 20,480 characters (including white space);</li>
+                    </ul>
+                    <h3>Hands-on time!</h3>
+                    <p>For our testing scenario, we will use a VPC endpoint for S3 gateway type, but you can choose
+                        which
+                        type suits you better for your case.In addition, <a
+                            href="https://gist.github.com/emersonjuan/413e7c1c8fb80e65f3eada923289ff5f#file-vpc-s3endpointgatewaypolicy-json"
+                            target=”_blank”>here</a>
+                        is the link for a simple sample policy that I used in my testing environment.</p>
+                    <p><b>CAREFUL.: DO NOT</b> test an endpoint policy directly in a production environment, since you
+                        might
+                        have
+                        some unmapped interaction between your services and S3 buckets that could be impacted.</p>
+                    <p>For simplicity and better visualization, the process below demonstrates how to deploy the VPC
+                        endpoint resource via AWS Console:</p>
+                    <img src="./images/vpc_images/vpcEndpoint.webp" width="700" height="700"
+                        alt="VPC Endpoint Configuration"> <br>
+                    <img src="./images/vpc_images/vpcEndpointPolicy.webp" width="700" height="700"
+                        alt="VPC Endpoint Policy">
+                    <p>After successfully creating the endpoint and attaching our custom policy, we are ready to go and
+                        test
+                        if the policy restrictions will work as expected.</p>
+                    <p>Let’s consider the first policy statement, sid <b>Access-to-bucket-in-specific-accounts-only</b>
+                        which
+                        allows any resource through the VPC endpoint to communicate with S3 buckets that are under
+                        <b>s3:ResourceAccount</b>.
+                    </p>
+                    <p>In the first screenshot below, we were able to list objects of the
+                        <b>vpc-s3-gateway-endpoint-test</b>
+                        bucket and also to copy the test.txt file to it, because we have the account in which the bucket
+                        resides in our endpoint policy. On the contrary, when removing the account that has our bucket
+                        from
+                        our endpoint policy we got some permission errors along with access denied.
+                    </p>
+                    <img src="./images/vpc_images/copyingFile.webp" width="700" height="200"
+                        alt="Copying and listing bucket files."><br>
+                    <img src="./images/vpc_images/accessDenied.webp" width="700" height="120" alt="Access Denied.">
+                    <h3>Conclusion:</h3>
+                    <p>Using a VPC endpoint for S3 makes us inherit some good benefits just out of the box as mentioned
+                        early. On top of that, we can attach a custom endpoint policy that brings some really nice
+                        access
+                        control through the endpoint.</p><br>
+                    <h3>Sources:</h3>
+                    <ol>
+                        <li>https://docs.aws.amazon.com/vpc/latest/privatelink/vpc-endpoints.html</li>
+                        <li>https://docs.aws.amazon.com/vpc/latest/privatelink/vpc-endpoints-access.html</li>
+                        <li>https://docs.aws.amazon.com/AmazonS3/latest/userguide/privatelink-interface-endpoints.html
+                        </li>
+                        <li>https://aws.amazon.com/blogs/aws/aws-privatelink-for-amazon-s3-now-available</li>
+                    </ol>
+                    <h4>Comments:</h4>
+                    <h5 id="name"></h5>
+                    <p id="comments"></p>
+                    <form onsubmit="comments(event)">
+                        <fieldset>
+                            <legend>
+                                Leave a comment:
+                            </legend>
+                            <label for="userName">Name (Required): </label>
+                            <input type="text" name="userName" id="userName" required><br><br>
+                            <label for="email">E-mail (Required):</label>
+                            <input type="email" name="email" id="email" required><br><br>
+                            <label for="comment">Comment (Required):</label><br>
+                            <textarea name="comment" id="comment" rows="15" cols="40"></textarea><br>
+                            <label for="submit"></label><br>
+                            <input type="submit" name="submit" id="submit" value="Post comment">
+                        </fieldset>
+                    </form>
+                </div>
+            </main>
+            <aside>
+                <div id="authorBox">
+                    <h3>About the author</h3>
+                    <p>Runner, Swimmer and a future triathlete. I love books, beers, and spend time with family and
+                        friends. Interest in Cloud Security and Web Application Security.</p>
+                </div>
+                <div id="recentPostsBox">
+                    <h3>Recent Posts</h3>
+                    <a href="dnsfirewall.html">AWS DNS Firewall</a><br>
+                    <a href="vpcendpoint.html">VPC S3 Endpoint with a Custom Policy</a><br>
+                    <a href="scps.html">AWS Service Control Policies (SCPs)</a><br>
+                    <a href="privatelink.html">How to Securely Connect to Provider’s service via AWS PrivateLink</a>
+                </div>
+                <div id="tagsBox">
+                    <h3>Categories/Tags</h3>
+                </div>
+            </aside>
+        </div>
+        <footer>
+            <small><i>Emerson Juan da Silva | Cloud Security Blog | <a href="aboutme.html">Contact</a></i></small>
+        </footer>
+    </div>
+</body>
+
+</html>

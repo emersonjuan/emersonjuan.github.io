@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Private Link | Cloud Security</title>
+    <link rel="stylesheet" href="./css/style.css">
+    <script src="./js/main.js" defer></script>
+</head>
+
+<body id="container">
+    <div id="wrapper">
+        <header>
+            <h1><a href="index.html">Emerson Silva | Cloud Security Blog</a></h1>
+        </header>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="articles.html">Articles</a></li>
+                <li><a href="aboutme.html">About Me</a></li>
+            </ul>
+        </nav>
+        <div id="flexBox">
+            <main>
+                <div class="fullArticle">
+                    <h2>How to Securely Connect to Provider’s service via AWS PrivateLink</h2>
+                    <p>There are several ways to provide access to resources located in the AWS environment. For
+                        instance,
+                        we
+                        can use VPC Peering, VPN, Direct Connect or even PrivateLink. For today, we will explore a basic
+                        architecture concept and how Endpoint Services (PrivateLink) could help us to make a specific
+                        service available from <b>VPC-Provider</b> to <b>VPC-Consumer</b>.</p>
+                    <h3>What is AWS PrivateLink?</h3>
+                    <p>AWS PrivateLink brings us the ability to access some AWS resources or services provided by an AWS
+                        account privately. In order to do so, AWS PrivateLink endpoint is created directly in the
+                        VPC-Consumer and it uses an ENI along with a private IP that belongs to the VPC-Consumer.[1]</p>
+                    <h3>VPC endpoints concepts:</h3>
+                    <p>"<b>VPC endpoint</b> — The entry point in your VPC that enables you to connect privately to a
+                        service. The following are the different types of VPC endpoints.</p>
+                    <p>You create the type of VPC endpoint required by the supported service.</p>
+                    <ul>
+                        <li>Gateway endpoint;</li>
+                        <li>Interface endpoint;</li>
+                        <li>Gateway Load Balancer endpoint;</li>
+                    </ul>
+                    <p><b>Endpoint service</b> — Your own application or service in your VPC. Other AWS principals can
+                        create an
+                        endpoint from their VPC to your endpoint service.</p>
+                    <p><b>AWS PrivateLink</b> — A technology that provides private connectivity between VPCs and
+                        services.”
+                        [2]</p>
+                    <img src="./images/privateLink_images/architectureDemo.webp" width="700" height="350"
+                        alt="The architecture demo">
+                    <figure>
+                        <figcaption>The architecture used for this demonstration by Emerson J da Silva</figcaption>
+                    </figure>
+                    <p>In order to demonstrate the communication occurring between the consumer and the provider, we set
+                        up
+                        two VPCs, both containing a private subnet which we deployed two EC2 instances, one EC2 that
+                        will be
+                        used to simulate a client’s access and another one that will be used as HTTP server
+                        respectively.
+                    </p>
+                    <h3>VPC Console:</h3>
+                    <img src="./images/privateLink_images/vpcConsole.webp" width="700" height="100" alt="VPC Console">
+                    <h3>EC2 Dashboard:</h3>
+                    <img src="./images/privateLink_images/ec2Dashboard.webp" width="700" height="80"
+                        alt="EC2 Dashboard">
+                    <p>After we deployed the EC2 instances, the next step is to create an internal NLB and associate its
+                        target to the HTTP_Provider EC2 instance.</p>
+                    <h3>Load Balancers:</h3>
+                    <img src="./images/privateLink_images/loadBalancers.webp" width="700" height="160"
+                        alt="Load Balancers">
+                    <p>Now, it is time to create our endpoint service which will be used later on by the consumer. For
+                        this,
+                        go to “VPC service” and then navigate to the left panel and select “Endpoint Services”, click on
+                        “create” service and then select our “NLB-Provider”.</p>
+                    <img src="./images/privateLink_images/NLB_Provider.webp" width="700" height="300"
+                        alt="NLB Provider">
+                    <img src="./images/privateLink_images/enpointCreated.webp" width="700" height="300"
+                        alt="Endpoint Created">
+                    <h3>NLB-Provider-Endpoint:</h3>
+                    <img src="./images/privateLink_images/NLB_Provider_Endpoint.webp" width="700" height="350"
+                        alt="NLB Provider Endpoint">
+                    <p>Next step, we are going to create the endpoint in VPC_Consumer. So, go to “Endpoints” on “VPC
+                        service” and then select the “Find service by name” option, paste the NLB-Provider’s service
+                        name
+                        that we have just created. For example:
+                        <i>com.amazonaws.vpce.us-east-1.vpce-svc-03f618cf19eed334b</i>
+                    </p>
+                    <img src="./images/privateLink_images/findServiceByName.webp" width="700" height="300"
+                        alt="Find Service by Name">
+                    <p>Select the appropriate security group to be attached on the endpoint:</p>
+                    <img src="./images/privateLink_images/securityGroup.webp" width="700" height="260"
+                        alt="Security Group">
+                    <p>The NLB_Endpoint_Consumer was created and placed in VPC_Consumer, but it is in <i>“pending
+                            acceptance”</i> status.</p>
+                    <img src="./images/privateLink_images/pendingAcceptance.webp" width="700" height="260"
+                        alt="Pending Acceptance">
+                    <p>To accept the pending request, go to “Endpoint Services”, select the “Endpoint Connections” tab,
+                        select the endpoint with “Pending Acceptance” state, click “Actions” and choose “Accept endpoint
+                        connection request”.</p>
+                    <h3>NLB_Provider_Endpoint:</h3>
+                    <img src="./images/privateLink_images/acceptEndpoint.webp" width="700" height="200"
+                        alt="Accept Endpoint">
+                    <p>After accepting the request, go back to “Endpoints” and check that NLB_Endpoint_Consumer state
+                        changed from “Pending_Acceptance” to “Available”.</p>
+                    <h3>NLB_Endpoint_Consumer:</h3>
+                    <img src="./images/privateLink_images/availableNLBEndpoint.webp" width="700" height="200"
+                        alt="NLB Endpoint Consumer">
+                    <p>Finally, let’s check out the results and see what we have achieved here. The first screen below
+                        shows
+                        us that the NLB_Endpoint_Consumer has an ENI and the DNS resolves to a private IP from the
+                        VPC_Consumer’s privates subnet.</p>
+                    <img src="./images/privateLink_images/vpcConsumerPrivate.webp" width="700" height="100"
+                        alt="VPC Consumer Private">
+                    <p>To test the connectivity, we can use the curl command and run it against the
+                        NLB_Endpoint_Consumer’s
+                        DNS. In our example, we got a “Connected” status along with 200 code from the application. It
+                        means,
+                        it worked!</p>
+                    <h3>Test_Consumer — EC2:</h3>
+                    <img src="./images/privateLink_images/testConsumer.webp" width="700" height="320"
+                        alt="Test Consumer">
+                    <p>The same test but now executed from the HTTP_Provider EC2.</p>
+                    <h3>HTTP_Provider EC2:</h3>
+                    <img src="./images/privateLink_images/httpProviderEC2.webp" width="700" height="320"
+                        alt="Test Consumer">
+                    <h3>Considerations:</h3>
+                    <p>“When the service provider and the consumer are in different accounts, use the Availability Zone
+                        ID
+                        to uniquely and consistently identify the endpoint service Availability Zone.</p>
+                    <p>Service providers can specify a private DNS name for a new endpoint service, or an existing
+                        endpoint
+                        service. To use a private DNS name, enable the feature, and then specify a private DNS name.
+                        Before
+                        consumers can use the private DNS name, you must verify that you have control of the
+                        domain/subdomain.” [3]</p>
+                    <h3>Benefits:</h3>
+                    <ul>
+                        <li>Do not need a NAT device, VPN connection, Internet gateway or even AWS Direct Connect.</li>
+                        <li>Traffic is kept on AWS backbone Infrastructure.</li>
+                        <li>Policies and Security groups can be applied.</li>
+                        <li>Different consumers can have the same CIDR with no problem.</li>
+                    </ul>
+                    <h3>Conclusion:</h3>
+                    <p>AWS PrivateLink is an easy way to provide secure and private connection to resources in a VPC.
+                        Moreover, it does not require a NAT device, VPN or even Direct Connect to provide access to a
+                        running service from a VPC. So, for some scenarios this solution explored above may be useful.
+                    </p>
+                    <h3>Sources:</h3>
+                    <ol>
+                        <li>https://docs.aws.amazon.com/whitepapers/latest/aws-vpc-connectivity-options/aws-privatelink.html
+                        </li>
+                        <li>https://docs.aws.amazon.com/vpc/latest/userguide/endpoint-services-overview.html</li>
+                        <li>https://docs.aws.amazon.com/vpc/latest/userguide/endpoint-services-overview.html</li>
+                    </ol>
+                    <h4>Comments:</h4>
+                    <h5 id="name"></h5>
+                    <p id="comments"></p>
+                    <form onsubmit="comments(event)">
+                        <fieldset>
+                            <legend>
+                                Leave a comment:
+                            </legend>
+                            <label for="userName">Name (Required): </label>
+                            <input type="text" name="userName" id="userName" required><br><br>
+                            <label for="email">E-mail (Required):</label>
+                            <input type="email" name="email" id="email" required><br><br>
+                            <label for="comment">Comment (Required):</label><br>
+                            <textarea name="comment" id="comment" rows="15" cols="40"></textarea><br>
+                            <label for="submit"></label><br>
+                            <input type="submit" name="submit" id="submit" value="Post comment">
+                        </fieldset>
+                    </form>
+                </div>
+            </main>
+            <aside>
+                <div id="authorBox">
+                    <h3>About the author</h3>
+                    <p>Runner, Swimmer and a future triathlete. I love books, beers, and spend time with family and
+                        friends. Interest in Cloud Security and Web Application Security.</p>
+                </div>
+                <div id="recentPostsBox">
+                    <h3>Recent Posts</h3>
+                    <a href="dnsfirewall.html">AWS DNS Firewall</a><br>
+                    <a href="vpcendpoint.html">VPC S3 Endpoint with a Custom Policy</a><br>
+                    <a href="scps.html">AWS Service Control Policies (SCPs)</a><br>
+                    <a href="privatelink.html">How to Securely Connect to Provider’s service via AWS PrivateLink</a>
+                </div>
+                <div id="tagsBox">
+                    <h3>Categories/Tags</h3>
+                </div>
+            </aside>
+        </div>
+        <footer>
+            <small><i>Emerson Juan da Silva | Cloud Security Blog | <a href="aboutme.html">Contact</a></i></small>
+        </footer>
+    </div>
+</body>
+
+</html>

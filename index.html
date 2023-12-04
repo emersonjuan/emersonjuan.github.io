@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>EJS | Cloud Security</title>
+    <link rel="stylesheet" href="./css/style.css">
+    <script src="./js/main.js" defer></script>
+</head>
+
+<body id="container">
+    <div id="wrapper">
+        <header>
+            <h1><a href="index.html">Emerson Silva | Cloud Security Blog</a></h1>
+        </header>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="articles.html">Articles</a></li>
+                <li><a href="aboutme.html">About Me</a></li>
+            </ul>
+        </nav>
+        <div id="flexBox">
+            <main>
+                <div class="articles">
+                    <h2>AWS DNS Firewall</h2>
+                    <h3>How to prevent data exfiltration via DNS tunneling.</h3>
+                    <p>AWS makes several features and services available so that the customer can effectively construct
+                        layered security in their environment.
+                        However, a few years ago, it was not possible to control DNS queries originating from the VPC
+                        natively, so the customer needed to plan the security of their network architecture with
+                        third-party
+                        solutions in order to fill that gap. <br><br><a href="dnsfirewall.html">Continue reading...</a>
+                    </p>
+                </div>
+                <div class="articles">
+                    <h2>VPC S3 Endpoint with a Custom Policy</h2>
+                    <p>Today, we will explore the basic concepts of the VPC endpoint for S3, the different types and
+                        differences between them, and most importantly, how to configure an S3 endpoint policy to limit
+                        which buckets your services can communicate with. <br><br><a href="vpcendpoint.html">Continue
+                            reading...</a></p>
+                </div>
+                <div class="articles">
+                    <h2>AWS Service Control Policies (SCPs)</h2>
+                    <p>Service control policies are used as guardrails or to set limits over a central location (AWS
+                        Organization). You can use SCPs to define the maximum permission allowed to accounts belonging
+                        to
+                        your organization. <br><br><a href="scps.html">Continue reading...</a></p>
+                </div>
+            </main>
+            <aside>
+                <div id="authorBox">
+                    <h3>About the author</h3>
+                    <p>Runner, Swimmer and a future triathlete. I love books, beers, and spend time with my family and
+                        friends. Interest in Cloud Security and Web Application Security.</p>
+                </div>
+                <div id="recentPostsBox">
+                    <h3>Recent Posts</h3>
+                    <a href="dnsfirewall.html">AWS DNS Firewall</a><br>
+                    <a href="vpcendpoint.html">VPC S3 Endpoint with a Custom Policy</a><br>
+                    <a href="scps.html">AWS Service Control Policies (SCPs)</a><br>
+                    <a href="privatelink.html">How to Securely Connect to Provider’s service via AWS PrivateLink</a>
+                </div>
+                <div id="tagsBox">
+                    <h3>Categories/Tags</h3>
+                </div>
+            </aside>
+        </div>
+        <footer>
+            <small><i>Emerson Juan da Silva | Cloud Security Blog | <a href="aboutme.html">Contact</a></i></small>
+        </footer>
+    </div>
+</body>
+
+</html>

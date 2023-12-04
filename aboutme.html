@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>About Me | Cloud Security</title>
+    <link rel="stylesheet" href="./css/style.css">
+    <script src="./js/main.js" defer></script>
+</head>
+
+<body id="container">
+    <div id="wrapper">
+        <header>
+            <h1><a href="index.html">Emerson Silva | Cloud Security Blog</a></h1>
+        </header>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="articles.html">Articles</a></li>
+                <li><a href="aboutme.html">About Me</a></li>
+            </ul>
+        </nav>
+        <div id="flexBox">
+            <main>
+                <div id="aboutme">
+                    <h2>About the Author</h2>
+                    <p>Emerson Juan da Silva is an IT professional with more than 9 years of experience. The last 6
+                        years
+                        have been dedicated
+                        to the Cybersecurity area,
+                        where I have worked in two major private banks in Brazil as a cloud security analyst. I have a
+                        degree in Information
+                        Security Management and am currently enrolled in the Computer & Information Systems -
+                        Cybersecurity
+                        (Post-Baccalaureate)
+                        program at Douglas College. In addition, I am an AWS-certified professional in cloud security
+                        and
+                        networking subjects.
+                        I am highly curious about and interested in Cloud Security and Web Application Security topics.
+                        On
+                        top of that, I am a
+                        Runner, Swimmer, and a future triathlete. I love books, beers, and spending time with my family
+                        and
+                        friends.</p>
+                    <form>
+                        <fieldset>
+                            <legend>Contact Form:</legend><br>
+                            <label for="name">Name (Required): </label>
+                            <input type="text" name="name" id="name" required><br><br>
+                            <label for="email">E-mail (Required):</label>
+                            <input type="email" name="email" id="email" required><br><br>
+                            <label for="email">Subject:</label>
+                            <input type="text" name="topic" id="topic"><br><br>
+                            <label for="message">Message:</label><br>
+                            <textarea name="message" id="message" rows="15" cols="60"></textarea><br>
+                            <label for="submit"></label><br>
+                            <input type="submit" name="submit" id="submit" onclick="contact();">
+                        </fieldset>
+                    </form>
+                </div>
+            </main>
+            <aside>
+                <div id="authorBox">
+                    <h3>About the author</h3>
+                    <p>Runner, Swimmer and a future triathlete. I love books, beers, and spend time with family and
+                        friends. Interest in Cloud Security and Web Application Security.</p>
+                </div>
+                <div id="recentPostsBox">
+                    <h3>Recent Posts</h3>
+                    <a href="dnsfirewall.html">AWS DNS Firewall</a><br>
+                    <a href="vpcendpoint.html">VPC S3 Endpoint with a Custom Policy</a><br>
+                    <a href="scps.html">AWS Service Control Policies (SCPs)</a><br>
+                    <a href="privatelink.html">How to Securely Connect to Provider’s service via AWS PrivateLink</a>
+                </div>
+                <div id="tagsBox">
+                    <h3>Categories/Tags</h3>
+                </div>
+            </aside>
+        </div>
+        <footer>
+            <small><i>Emerson Juan da Silva | Cloud Security Blog | <a href="aboutme.html">Contact</a></i></small>
+        </footer>
+    </div>
+</body>
+
+</html>
